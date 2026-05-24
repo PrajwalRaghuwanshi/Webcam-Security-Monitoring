@@ -1,33 +1,14 @@
-import cv2
+import streamlit as st
 import time
 
-cap = cv2.VideoCapture(0)
+st.title("Webcam Security Monitoring")
 
-printed = False
+img = st.camera_input("Open Webcam")
 
-if not cap.isOpened():
-    print("Camera not accessible")
+if img:
+    st.success("Webcam is being used")
 
-else:
-    print("Camera is active")
+    with open("log.txt", "a") as f:
+        f.write(f"Accessed at {time.ctime()}\n")
 
-    while True:
-        ret, frame = cap.read()
-
-        if ret:
-
-            if not printed:
-                print("Webcam is being used")
-
-                with open("log.txt", "a") as f:
-                    f.write(f"Accessed at {time.ctime()}\n")
-
-                printed = True
-
-            cv2.imshow('Webcam Monitor', frame)
-
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
-
-cap.release()
-cv2.destroyAllWindows()
+    st.image(img)
